@@ -25,10 +25,18 @@ class FinancialMarket:
             self.series[r['date_time']]['up'] = r['up']
             self.series[r['date_time']]['down'] = r['down']
             self.series[r['date_time']]['volume'] = r['volume']
-            self.series[r['date_time']]['delta_current_day'] = r['delta_current_day']
-            self.series[r['date_time']]['delta_next_day'] = r['delta_next_day']
-            self.series[r['date_time']]['delta_percentage_current_day'] = r['delta_current_day_percentage']
-            self.series[r['date_time']]['delta_percentage_next_day'] = r['delta_next_day_percentage']
+            if "delta_current_day" in r:
+                self.series[r['date_time']]['delta_current_day'] = r['delta_current_day']
+            else:
+                self.series[r['date_time']]['delta_current_day'] = r['close'] - r['open']
+            if "delta_current_day_percentage" in r:
+                self.series[r['date_time']]['delta_percentage_current_day'] = r['delta_current_day_percentage']
+            else:
+                self.series[r['date_time']]['delta_percentage_current_day'] = ((r['close'] - r['open'])/r['open']) * 100
+            if "delta_next_day" in r:
+                self.series[r['date_time']]['delta_next_day'] = r['delta_next_day']
+            if "delta_next_day_percentage" in r:
+                self.series[r['date_time']]['delta_percentage_next_day'] = r['delta_next_day_percentage']
 
     def create_date_time_series(self):
         self.series_list = []
@@ -44,9 +52,11 @@ class FinancialMarket:
             d['down'] = r['down']
             d['volume'] = r['volume']
             d['delta_current_day'] = r['delta_current_day']
-            d['delta_next_day'] = r['delta_next_day']
+            if "delta_next_day" in r:
+                d['delta_next_day'] = r['delta_next_day']
             d['delta_percentage_current_day'] = r['delta_current_day_percentage']
-            d['delta_percentage_next_day'] = r['delta_next_day_percentage']
+            if "delta_percentage_next_day" in r:
+                d['delta_percentage_next_day'] = r['delta_next_day_percentage']
             self.series_list.append(d)
             self.date_times.append(r['date_time'])
 
